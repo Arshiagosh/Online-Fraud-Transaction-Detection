@@ -1,8 +1,8 @@
 import numpy as np
 
 
-class Node():
-    def __init__(self, feature_index=None, children=None,
+class Node:
+    def __init__(self, feature_index=None,
                  info_gain=None, value=None):
         ''' constructor '''
 
@@ -15,9 +15,9 @@ class Node():
         self.value = value
 
 
-class DecisionTree():
+class DecisionTree:
 
-    def __init__(self, min_samples_split=2, max_depth=2):
+    def __init__(self, min_samples_split=2, max_depth=2, mode='entropy'):
         ''' constructor '''
 
         # initialize the root of the tree
@@ -26,6 +26,7 @@ class DecisionTree():
         # stopping conditions
         self.min_samples_split = min_samples_split
         self.max_depth = max_depth
+        self.mode = mode
 
     def build_tree(self, dataset, curr_depth=0):
         ''' recursive function to build the tree '''
@@ -82,8 +83,7 @@ class DecisionTree():
                                                         [:, -1]
                                                         for value in
                                                         split_datasets.keys()
-                                                        },
-                                                       mode="entropy")
+                                                        })
 
                 # Update the best split if needed
                 if curr_info_gain > max_info_gain:
@@ -110,9 +110,9 @@ class DecisionTree():
 
         return split_datasets
 
-    def information_gain(self, parent, children, mode="entropy"):
+    def information_gain(self, parent, children):
         ''' function to compute information gain '''
-
+        mode = self.mode
         weights = [len(child) / len(parent) for child in children.values()]
         if mode == "gini":
             parent_impurity = self.gini_index(parent)
@@ -181,8 +181,8 @@ class DecisionTree():
     def predict(self, X):
         ''' function to predict new dataset '''
 
-        preditions = [self.make_prediction(x, self.root) for x in X]
-        return preditions
+        predictions = [self.make_prediction(x, self.root) for x in X]
+        return predictions
 
     def make_prediction(self, x, tree):
         ''' function to predict a single data point '''
